@@ -87,7 +87,9 @@
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('state',this)">My State</button>
+  <!-- TEMP HIDDEN - Support Needed tab (re-enable when ready)
   <button class="tab" onclick="switchTab('support',this)">Support Needed</button>
+  -->
   <button class="tab" onclick="switchTab('travel',this)">Travel</button>
 </div>
 
@@ -95,9 +97,11 @@
   <div class="pane active" id="pane-state">
     <div class="grid" id="grid-state"></div>
   </div>
+  <!-- TEMP HIDDEN - Support Needed pane (re-enable when ready)
   <div class="pane" id="pane-support">
     <div class="grid" id="grid-support"></div>
   </div>
+  -->
   <div class="pane" id="pane-travel">
     <div class="grid" id="grid-travel"></div>
   </div>
@@ -178,7 +182,7 @@ function switchTab(tab, btn) {
 }
 
 buildGrid(STATE, 'grid-state');
-buildGrid(SUPPORT, 'grid-support');
+// TEMP HIDDEN - buildGrid(SUPPORT, 'grid-support');
 buildGrid(TRAVEL, 'grid-travel');
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
