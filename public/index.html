@@ -80,7 +80,7 @@
 <body>
 
 <div class="header">
-  <div class="eyebrow">Father's Day · Processing Cards</div>
+  <div class="eyebrow">For any moment</div>
   <h1>Processing Cards</h1>
   <p>Tap a card to copy — paste into WhatsApp</p>
 </div>
@@ -88,6 +88,7 @@
 <div class="tabs">
   <button class="tab active" onclick="switchTab('state',this)">My State</button>
   <button class="tab" onclick="switchTab('support',this)">Support Needed</button>
+  <button class="tab" onclick="switchTab('travel',this)">Travel</button>
 </div>
 
 <div class="scroll">
@@ -96,6 +97,9 @@
   </div>
   <div class="pane" id="pane-support">
     <div class="grid" id="grid-support"></div>
+  </div>
+  <div class="pane" id="pane-travel">
+    <div class="grid" id="grid-travel"></div>
   </div>
 </div>
 
@@ -130,6 +134,20 @@ const SUPPORT = [
   { e:"📋", w:"List With Me",        s:"let's write it out",       t:"📋 List With Me\nlet's write it out" },
 ];
 
+
+const TRAVEL = [
+  { e:"✈️", w:"Flight Nerves",      s:"before takeoff",          t:"✈️ Flight Nerves\nbefore takeoff" },
+  { e:"🛂", w:"Airport Overwhelm",  s:"queues & crowds",         t:"🛂 Airport Overwhelm\nqueues & crowds" },
+  { e:"🧳", w:"Packing Panic",      s:"last-minute scramble",    t:"🧳 Packing Panic\nlast-minute scramble" },
+  { e:"🗺️", w:"New Place, New Rules", s:"unfamiliar systems",    t:"🗺️ New Place, New Rules\nunfamiliar systems" },
+  { e:"🌍", w:"Language Gap",       s:"can't find the words",    t:"🌍 Language Gap\ncan't find the words" },
+  { e:"🕐", w:"Time Zone Drift",    s:"body clock's off",        t:"🕐 Time Zone Drift\nbody clock's off" },
+  { e:"🏖️", w:"Can't Switch Off",   s:"holiday mode stuck",      t:"🏖️ Can't Switch Off\nholiday mode stuck" },
+  { e:"🚕", w:"Transfer Stress",    s:"logistics piling up",     t:"🚕 Transfer Stress\nlogistics piling up" },
+  { e:"🛏️", w:"Strange Bed",        s:"sleep thrown off",        t:"🛏️ Strange Bed\nsleep thrown off" },
+  { e:"📋", w:"Itinerary Anxiety",  s:"too much planned",        t:"📋 Itinerary Anxiety\ntoo much planned" },
+];
+
 function buildGrid(cards, id) {
   const grid = document.getElementById(id);
   cards.forEach(card => {
@@ -161,6 +179,7 @@ function switchTab(tab, btn) {
 
 buildGrid(STATE, 'grid-state');
 buildGrid(SUPPORT, 'grid-support');
+buildGrid(TRAVEL, 'grid-travel');
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
 </body>
