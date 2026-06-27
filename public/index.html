@@ -36,7 +36,7 @@
   }
   .tab.active { background: white; color: #1E2A32; }
 
-  .scroll { padding: 14px 14px 60px; }
+  .scroll { padding: 14px 14px 110px; }
   .grid { display: flex; flex-direction: column; gap: 10px; }
 
   .chip {
@@ -61,9 +61,12 @@
   .chip-word { font-size: 18px; font-weight: 800; color: #1E2A32; margin-bottom: 5px; }
   .chip-sub  { font-size: 14px; font-weight: 600; color: #9AAAB4; }
 
+  .pane { display: none; }
+  .pane.active { display: block; }
+
   .toast {
     position: fixed;
-    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
     left: 50%; transform: translateX(-50%) translateY(70px);
     background: #1E2A32; color: white;
     font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
@@ -73,8 +76,40 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .pane { display: none; }
-  .pane.active { display: block; }
+  .buffer-bar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: white;
+    border-top: 1px solid #E3E8EB;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 50;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+  }
+  .buffer-empty {
+    font-size: 12px; color: #9AAAB4; text-align: center; font-weight: 700;
+    padding: 6px 0;
+  }
+  .buffer-content {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .buffer-chips {
+    flex: 1; display: flex; gap: 6px; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .buffer-chips::-webkit-scrollbar { display: none; }
+  .buffer-chip {
+    flex-shrink: 0;
+    background: #EDF4FA; color: #1E2A32;
+    font-size: 12px; font-weight: 700;
+    padding: 6px 10px; border-radius: 20px; white-space: nowrap;
+  }
+  .buffer-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .buffer-btn {
+    border: none; background: #1E2A32; color: white;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px;
+    padding: 8px 12px; border-radius: 20px; cursor: pointer;
+  }
+  .buffer-btn.clear { background: #C0594F; }
+  .buffer-btn:active { transform: scale(0.95); }
 </style>
 </head>
 <body>
@@ -108,6 +143,17 @@
 </div>
 
 <div class="toast" id="toast">Copied ✓ — paste into WhatsApp</div>
+
+<div class="buffer-bar" id="bufferBar">
+  <div class="buffer-empty" id="bufferEmpty">Tap cards to build your message</div>
+  <div class="buffer-content" id="bufferContent" style="display:none;">
+    <div class="buffer-chips" id="bufferChips"></div>
+    <div class="buffer-actions">
+      <button class="buffer-btn" onclick="deleteLast()">↩ Undo</button>
+      <button class="buffer-btn clear" onclick="clearBuffer()">✕ Clear</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const STATE = [
@@ -152,6 +198,45 @@ const TRAVEL = [
   { e:"📋", w:"Itinerary Anxiety",  s:"too much planned",        t:"📋 Itinerary Anxiety\ntoo much planned" },
 ];
 
+let buffer = [];
+
+function addToBuffer(card) {
+  buffer.push(card);
+  syncBuffer();
+}
+
+function deleteLast() {
+  if (buffer.length === 0) return;
+  buffer.pop();
+  syncBuffer();
+}
+
+function clearBuffer() {
+  buffer = [];
+  syncBuffer();
+}
+
+function syncBuffer() {
+  const text = buffer.map(c => c.t).join('\n\n');
+  navigator.clipboard.writeText(text).catch(() => {});
+  renderBufferUI();
+}
+
+function renderBufferUI() {
+  const empty = document.getElementById('bufferEmpty');
+  const content = document.getElementById('bufferContent');
+  const chips = document.getElementById('bufferChips');
+  if (buffer.length === 0) {
+    empty.style.display = 'block';
+    content.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  content.style.display = 'flex';
+  chips.innerHTML = buffer.map(c => `<span class="buffer-chip">${c.e} ${c.w}</span>`).join('');
+  chips.scrollLeft = chips.scrollWidth;
+}
+
 function buildGrid(cards, id) {
   const grid = document.getElementById(id);
   cards.forEach(card => {
@@ -163,12 +248,12 @@ function buildGrid(cards, id) {
       ${card.s ? `<div class="chip-sub">${card.s}</div>` : ''}
     `;
     el.addEventListener('click', () => {
-      navigator.clipboard.writeText(card.t).catch(() => {});
+      addToBuffer(card);
       el.classList.add('flash');
       setTimeout(() => el.classList.remove('flash'), 900);
       const toast = document.getElementById('toast');
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      setTimeout(() => toast.classList.remove('show'), 1400);
     });
     grid.appendChild(el);
   });
@@ -184,6 +269,7 @@ function switchTab(tab, btn) {
 buildGrid(STATE, 'grid-state');
 // TEMP HIDDEN - buildGrid(SUPPORT, 'grid-support');
 buildGrid(TRAVEL, 'grid-travel');
+renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
 </body>
