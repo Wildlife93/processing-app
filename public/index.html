@@ -126,6 +126,7 @@
   <button class="tab" onclick="switchTab('support',this)">Support Needed</button>
   -->
   <button class="tab" onclick="switchTab('travel',this)">Travel</button>
+  <button class="tab" onclick="switchTab('beach',this)">Beach</button>
 </div>
 
 <div class="scroll">
@@ -139,6 +140,9 @@
   -->
   <div class="pane" id="pane-travel">
     <div class="grid" id="grid-travel"></div>
+  </div>
+  <div class="pane" id="pane-beach">
+    <div class="grid" id="grid-beach"></div>
   </div>
 </div>
 
@@ -196,6 +200,19 @@ const TRAVEL = [
   { e:"🚕", w:"Transfer Stress",    s:"logistics piling up",     t:"🚕 Transfer Stress\nlogistics piling up" },
   { e:"🛏️", w:"Strange Bed",        s:"sleep thrown off",        t:"🛏️ Strange Bed\nsleep thrown off" },
   { e:"📋", w:"Itinerary Anxiety",  s:"too much planned",        t:"📋 Itinerary Anxiety\ntoo much planned" },
+];
+
+const BEACH = [
+  { e:"☀️", w:"Sun Overload",      s:"too bright, too hot",        t:"☀️ Sun Overload\ntoo bright, too hot" },
+  { e:"🏖️", w:"Sand Everywhere",   s:"texture overwhelm",          t:"🏖️ Sand Everywhere\ntexture overwhelm" },
+  { e:"🌊", w:"Wave Anxiety",      s:"water feels unpredictable",  t:"🌊 Wave Anxiety\nwater feels unpredictable" },
+  { e:"🧴", w:"Sunscreen Hassle",  s:"sticky, smell, fuss",        t:"🧴 Sunscreen Hassle\nsticky, smell, fuss" },
+  { e:"📢", w:"Crowd Noise",       s:"too many people",            t:"📢 Crowd Noise\ntoo many people" },
+  { e:"🦟", w:"Bug Bites",         s:"itchy distraction",          t:"🦟 Bug Bites\nitchy distraction" },
+  { e:"👙", w:"Body Exposure",     s:"feeling on display",         t:"👙 Body Exposure\nfeeling on display" },
+  { e:"🥵", w:"Heat Exhaustion",   s:"overheating fast",           t:"🥵 Heat Exhaustion\noverheating fast" },
+  { e:"🧳", w:"Beach Bag Chaos",   s:"too much to carry",          t:"🧳 Beach Bag Chaos\ntoo much to carry" },
+  { e:"⏰", w:"Tide Timing",       s:"tracking the schedule",      t:"⏰ Tide Timing\ntracking the schedule" },
 ];
 
 let buffer = [];
@@ -269,6 +286,7 @@ function switchTab(tab, btn) {
 buildGrid(STATE, 'grid-state');
 // TEMP HIDDEN - buildGrid(SUPPORT, 'grid-support');
 buildGrid(TRAVEL, 'grid-travel');
+buildGrid(BEACH, 'grid-beach');
 renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
