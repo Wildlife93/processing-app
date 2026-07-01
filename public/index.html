@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,6 +128,9 @@
   -->
   <button class="tab" onclick="switchTab('travel',this)">Travel</button>
   <button class="tab" onclick="switchTab('beach',this)">Beach</button>
+  <button class="tab" onclick="switchTab('restaurant',this)">Restaurant</button>
+  <button class="tab" onclick="switchTab('pool',this)">Pool</button>
+  <button class="tab" onclick="switchTab('wifi',this)">WiFi & Signal</button>
 </div>
 
 <div class="scroll">
@@ -143,6 +147,15 @@
   </div>
   <div class="pane" id="pane-beach">
     <div class="grid" id="grid-beach"></div>
+  </div>
+  <div class="pane" id="pane-restaurant">
+    <div class="grid" id="grid-restaurant"></div>
+  </div>
+  <div class="pane" id="pane-pool">
+    <div class="grid" id="grid-pool"></div>
+  </div>
+  <div class="pane" id="pane-wifi">
+    <div class="grid" id="grid-wifi"></div>
   </div>
 </div>
 
@@ -213,6 +226,45 @@ const BEACH = [
   { e:"🥵", w:"Heat Exhaustion",   s:"overheating fast",           t:"🥵 Heat Exhaustion\noverheating fast" },
   { e:"🧳", w:"Beach Bag Chaos",   s:"too much to carry",          t:"🧳 Beach Bag Chaos\ntoo much to carry" },
   { e:"⏰", w:"Tide Timing",       s:"tracking the schedule",      t:"⏰ Tide Timing\ntracking the schedule" },
+];
+
+const RESTAURANT = [
+  { e:"🍽️", w:"Menu Overwhelm",     s:"too many choices",          t:"🍽️ Menu Overwhelm\ntoo many choices" },
+  { e:"🔊", w:"Background Noise",   s:"hard to filter out",        t:"🔊 Background Noise\nhard to filter out" },
+  { e:"⏳", w:"Waiting Anxiety",    s:"not sure what's happening", t:"⏳ Waiting Anxiety\nnot sure what's happening" },
+  { e:"👀", w:"Feeling Watched",    s:"public space pressure",     t:"👀 Feeling Watched\npublic space pressure" },
+  { e:"🥘", w:"Food Uncertainty",   s:"not sure what's in it",     t:"🥘 Food Uncertainty\nnot sure what's in it" },
+  { e:"💬", w:"Small Talk Drain",   s:"sociable mode is hard",     t:"💬 Small Talk Drain\nsociable mode is hard" },
+  { e:"🪑", w:"Seating Discomfort", s:"wrong chair, wrong spot",   t:"🪑 Seating Discomfort\nwrong chair, wrong spot" },
+  { e:"🧾", w:"Bill Stress",        s:"maths & splitting pressure", t:"🧾 Bill Stress\nmaths & splitting pressure" },
+  { e:"🌡️", w:"Temperature Off",    s:"too hot or too cold inside", t:"🌡️ Temperature Off\ntoo hot or too cold inside" },
+  { e:"🚪", w:"Need an Exit",       s:"feeling trapped in here",   t:"🚪 Need an Exit\nfeeling trapped in here" },
+];
+
+const POOL = [
+  { e:"💦", w:"Water Sensitivity",  s:"temperature or feel",       t:"💦 Water Sensitivity\ntemperature or feel" },
+  { e:"👙", w:"Body Exposure",      s:"feeling on display",        t:"👙 Body Exposure\nfeeling on display" },
+  { e:"📢", w:"Echo & Noise",       s:"loud, echoey space",        t:"📢 Echo & Noise\nloud, echoey space" },
+  { e:"🧴", w:"Chlorine Smell",     s:"overwhelming chemical scent", t:"🧴 Chlorine Smell\noverwhelming chemical scent" },
+  { e:"😬", w:"Changing Room",      s:"anxious about the space",   t:"😬 Changing Room\nanxious about the space" },
+  { e:"🌊", w:"Deep End Fear",      s:"out of my depth",           t:"🌊 Deep End Fear\nout of my depth" },
+  { e:"👣", w:"Wet Floors",         s:"sensory / safety worry",    t:"👣 Wet Floors\nsensory / safety worry" },
+  { e:"🕐", w:"Lane Pressure",      s:"keeping up with others",    t:"🕐 Lane Pressure\nkeeping up with others" },
+  { e:"🥶", w:"Cold Shock",         s:"sudden temperature drop",   t:"🥶 Cold Shock\nsudden temperature drop" },
+  { e:"🔋", w:"Energy Drain",       s:"more tired than expected",  t:"🔋 Energy Drain\nmore tired than expected" },
+];
+
+const WIFI = [
+  { e:"📶", w:"No Signal",          s:"completely cut off",         t:"📶 No Signal\ncompletely cut off" },
+  { e:"🐌", w:"Connection Slow",    s:"frustratingly laggy",        t:"🐌 Connection Slow\nfrustatingly laggy" },
+  { e:"🔄", w:"Keeps Dropping",     s:"reconnecting constantly",    t:"🔄 Keeps Dropping\nreconnecting constantly" },
+  { e:"🔐", w:"Can't Log In",       s:"password / auth issue",      t:"🔐 Can't Log In\npassword / auth issue" },
+  { e:"📵", w:"Mobile Data Gone",   s:"roaming or limit hit",       t:"📵 Mobile Data Gone\nroaming or limit hit" },
+  { e:"🌍", w:"Wrong Country Band", s:"network not compatible",     t:"🌍 Wrong Country Band\nnetwork not compatible" },
+  { e:"🏨", w:"Hotel WiFi",         s:"unreliable & slow",          t:"🏨 Hotel WiFi\nunreliable & slow" },
+  { e:"😤", w:"Buffering Again",    s:"video keeps stopping",       t:"😤 Buffering Again\nvideo keeps stopping" },
+  { e:"📞", w:"Calls Cutting Out",  s:"can't hold a conversation",  t:"📞 Calls Cutting Out\ncan't hold a conversation" },
+  { e:"🔋", w:"Draining Battery",   s:"signal search using power",  t:"🔋 Draining Battery\nsignal search using power" },
 ];
 
 let buffer = [];
@@ -287,8 +339,12 @@ buildGrid(STATE, 'grid-state');
 // TEMP HIDDEN - buildGrid(SUPPORT, 'grid-support');
 buildGrid(TRAVEL, 'grid-travel');
 buildGrid(BEACH, 'grid-beach');
+buildGrid(RESTAURANT, 'grid-restaurant');
+buildGrid(POOL, 'grid-pool');
+buildGrid(WIFI, 'grid-wifi');
 renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
 </body>
 </html>
+
