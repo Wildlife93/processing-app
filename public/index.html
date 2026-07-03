@@ -114,6 +114,60 @@
   }
   .buffer-btn.clear { background: #C0594F; }
   .buffer-btn:active { transform: scale(0.95); }
+
+  .levels-actions {
+    position: sticky; top: 0; z-index: 10;
+    background: #F0F3F5;
+    padding: 0 0 12px;
+    display: flex; gap: 8px;
+  }
+  .levels-actions .buffer-btn {
+    flex: 1; text-align: center; padding: 11px 0;
+    border-radius: 14px; font-size: 13px;
+  }
+  .section-header {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #9AAAB4;
+    margin: 0 4px 8px;
+  }
+  .category-block { margin-bottom: 16px; }
+  .category-block:first-child { margin-top: 0; }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+    gap: 10px;
+  }
+  .slider-row {
+    background: white;
+    border-radius: 18px;
+    padding: 12px 8px 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .slider-row.wide { grid-column: 1 / -1; }
+  .slider-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: #EDF4FA;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 6px;
+  }
+  .slider-word {
+    font-size: 11.5px; font-weight: 800; color: #1E2A32;
+    min-height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+    line-height: 1.15;
+  }
+  .slider-row input[type="range"] {
+    width: 100%; accent-color: #1E2A32; margin-bottom: 4px;
+    height: 24px;
+  }
+  .slider-value {
+    font-size: 12px; font-weight: 800; color: #4A8C6A;
+  }
 </style>
 </head>
 <body>
@@ -126,19 +180,46 @@
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('state',this)">My State</button>
+  <button class="tab" onclick="switchTab('masking',this)">Masking</button>
+  <button class="tab" onclick="switchTab('illness',this)">Illness</button>
+  <button class="tab" onclick="switchTab('work',this)">Work & Chores</button>
+  <button class="tab" onclick="switchTab('restaurant',this)">Restaurant</button>
+  <button class="tab" onclick="switchTab('wifi',this)">WiFi & Signal</button>
+  <button class="tab" onclick="switchTab('levels',this)">Levels</button>
   <!-- TEMP HIDDEN - Support Needed tab (re-enable when ready)
   <button class="tab" onclick="switchTab('support',this)">Support Needed</button>
   -->
   <button class="tab" onclick="switchTab('travel',this)">Travel</button>
   <button class="tab" onclick="switchTab('beach',this)">Beach</button>
-  <button class="tab" onclick="switchTab('restaurant',this)">Restaurant</button>
   <button class="tab" onclick="switchTab('pool',this)">Pool</button>
-  <button class="tab" onclick="switchTab('wifi',this)">WiFi & Signal</button>
+  <button class="tab" onclick="switchTab('general',this)">General</button>
 </div>
 
 <div class="scroll">
   <div class="pane active" id="pane-state">
     <div class="grid" id="grid-state"></div>
+  </div>
+  <div class="pane" id="pane-masking">
+    <div class="grid" id="grid-masking"></div>
+  </div>
+  <div class="pane" id="pane-illness">
+    <div class="grid" id="grid-illness"></div>
+  </div>
+  <div class="pane" id="pane-work">
+    <div class="grid" id="grid-work"></div>
+  </div>
+  <div class="pane" id="pane-restaurant">
+    <div class="grid" id="grid-restaurant"></div>
+  </div>
+  <div class="pane" id="pane-wifi">
+    <div class="grid" id="grid-wifi"></div>
+  </div>
+  <div class="pane" id="pane-levels">
+    <div class="levels-actions">
+      <button class="buffer-btn" onclick="copyLevels()">📋 Copy Levels</button>
+      <button class="buffer-btn clear" onclick="resetLevels()">↺ Reset</button>
+    </div>
+    <div id="levels-container"></div>
   </div>
   <!-- TEMP HIDDEN - Support Needed pane (re-enable when ready)
   <div class="pane" id="pane-support">
@@ -151,14 +232,11 @@
   <div class="pane" id="pane-beach">
     <div class="grid" id="grid-beach"></div>
   </div>
-  <div class="pane" id="pane-restaurant">
-    <div class="grid" id="grid-restaurant"></div>
-  </div>
   <div class="pane" id="pane-pool">
     <div class="grid" id="grid-pool"></div>
   </div>
-  <div class="pane" id="pane-wifi">
-    <div class="grid" id="grid-wifi"></div>
+  <div class="pane" id="pane-general">
+    <div class="grid" id="grid-general"></div>
   </div>
 </div>
 
@@ -280,6 +358,219 @@ const WIFI = [
   { e:"🔋", w:"Draining Battery",   s:"signal search using power",  t:"🔋 Draining Battery\nsignal search using power" },
 ];
 
+const ILLNESS = [
+  { e:"🤒", w:"Fever",              s:"running hot",              t:"🤒 Fever\nrunning hot" },
+  { e:"🤢", w:"Nauseous",           s:"feel sick",                t:"🤢 Nauseous\nfeel sick" },
+  { e:"🤕", w:"Headache",           s:"pounding",                 t:"🤕 Headache\npounding" },
+  { e:"😮‍💨", w:"Exhausted",         s:"no energy",                t:"😮‍💨 Exhausted\nno energy" },
+  { e:"🥶", w:"Chills",             s:"can't get warm",           t:"🥶 Chills\ncan't get warm" },
+  { e:"🤧", w:"Congested",          s:"stuffy & blocked",         t:"🤧 Congested\nstuffy & blocked" },
+  { e:"😪", w:"Can't Stay Awake",   s:"need to sleep",            t:"😪 Can't Stay Awake\nneed to sleep" },
+  { e:"🙅", w:"Can't Eat",          s:"appetite's gone",          t:"🙅 Can't Eat\nappetite's gone" },
+  { e:"💊", w:"Need Medication",    s:"time for meds",            t:"💊 Need Medication\ntime for meds" },
+  { e:"🛌", w:"Need to Rest",       s:"body needs to stop",       t:"🛌 Need to Rest\nbody needs to stop" },
+  { e:"😖", w:"Body Aches",         s:"everything hurts",         t:"😖 Body Aches\neverything hurts" },
+  { e:"🌀", w:"Dizzy",              s:"room's spinning",          t:"🌀 Dizzy\nroom's spinning" },
+  { e:"🗣️", w:"Sore Throat",        s:"hurts to talk",            t:"🗣️ Sore Throat\nhurts to talk" },
+  { e:"😣", w:"Stomach Problems",   s:"cramping / upset stomach",  t:"😣 Stomach Problems\ncramping / upset stomach" },
+  { e:"🩹", w:"Fragile",            s:"handle with care today",   t:"🩹 Fragile\nhandle with care today" },
+];
+
+const MASKING = [
+  { e:"🎭", w:"Mask Slipping",      s:"can't keep it up",              t:"🎭 Mask Slipping\ncan't keep it up" },
+  { e:"🔋", w:"Masking Drain",      s:"using all my energy",           t:"🔋 Masking Drain\nusing all my energy" },
+  { e:"🤐", w:"Suppressing Stims",  s:"holding it in",                 t:"🤐 Suppressing Stims\nholding it in" },
+  { e:"🗣️", w:"Scripted Small Talk", s:"rehearsed responses",          t:"🗣️ Scripted Small Talk\nrehearsed responses" },
+  { e:"😊", w:"Forced Smile",       s:"performing okay",               t:"😊 Forced Smile\nperforming okay" },
+  { e:"👥", w:"Copying Others",     s:"mirroring to fit in",           t:"👥 Copying Others\nmirroring to fit in" },
+  { e:"💥", w:"Post-Mask Crash",    s:"collapse after holding it together", t:"💥 Post-Mask Crash\ncollapse after holding it together" },
+  { e:"🧊", w:"Holding It Together", s:"barely keeping composed",      t:"🧊 Holding It Together\nbarely keeping composed" },
+  { e:"🎯", w:"Overperforming Normal", s:"trying too hard to seem fine", t:"🎯 Overperforming Normal\ntrying too hard to seem fine" },
+  { e:"🫥", w:"Need to Unmask",     s:"safe space needed",             t:"🫥 Need to Unmask\nsafe space needed" },
+  { e:"👁️", w:"Eye Contact Script", s:"faking natural eye contact",    t:"👁️ Eye Contact Script\nfaking natural eye contact" },
+  { e:"🗒️", w:"Rehearsing Responses", s:"planning what to say",        t:"🗒️ Rehearsing Responses\nplanning what to say" },
+];
+
+const WORK = [
+  { e:"🗣️", w:"Meeting Overload",   s:"too much talking & listening", t:"🗣️ Meeting Overload\ntoo much talking & listening" },
+  { e:"🔀", w:"Task Switching",     s:"context switching exhausted", t:"🔀 Task Switching\ncontext switching exhausted" },
+  { e:"⏰", w:"Deadline Pressure",  s:"running out of time",        t:"⏰ Deadline Pressure\nrunning out of time" },
+  { e:"🧑‍🤝‍🧑", w:"Forced Small Talk", s:"performing sociable",     t:"🧑‍🤝‍🧑 Forced Small Talk\nperforming sociable" },
+  { e:"🖨️", w:"Broken Equipment",   s:"tech not working",           t:"🖨️ Broken Equipment\ntech not working" },
+  { e:"🧹", w:"Chore Avoidance",    s:"can't make myself start",    t:"🧹 Chore Avoidance\ncan't make myself start" },
+  { e:"🧺", w:"Laundry Pile",       s:"overwhelmed by the pile",    t:"🧺 Laundry Pile\noverwhelmed by the pile" },
+  { e:"🍽️", w:"Dishes Piling Up",   s:"avoidance spiral",           t:"🍽️ Dishes Piling Up\navoidance spiral" },
+  { e:"🗑️", w:"Clutter Overwhelm",  s:"too much mess around me",    t:"🗑️ Clutter Overwhelm\ntoo much mess around me" },
+  { e:"📋", w:"Too Many Tasks",     s:"don't know where to start",  t:"📋 Too Many Tasks\ndon't know where to start" },
+  { e:"🔨", w:"DIY Frustration",    s:"home repair stress",         t:"🔨 DIY Frustration\nhome repair stress" },
+  { e:"🛒", w:"Errand Overload",    s:"too many places to go",      t:"🛒 Errand Overload\ntoo many places to go" },
+  { e:"🏠", w:"Working From Home",  s:"no separation from home life", t:"🏠 Working From Home\nno separation from home life" },
+  { e:"🚏", w:"No Commute Buffer",  s:"straight into work headspace", t:"🚏 No Commute Buffer\nstraight into work headspace" },
+  // TEMP HIDDEN - { e:"🛋️", w:"Blurred Boundaries", s:"work and home blending together", t:"🛋️ Blurred Boundaries\nwork and home blending together" },
+  { e:"📞", w:"Phone Ringing",      s:"startling & intrusive",      t:"📞 Phone Ringing\nstartling & intrusive" },
+  { e:"🗣️", w:"Overhearing Their Calls", s:"background voices I can't tune out", t:"🗣️ Overhearing Their Calls\nbackground voices I can't tune out" },
+  { e:"👂", w:"Someone Else's Noise", s:"typing, chewing, moving around", t:"👂 Someone Else's Noise\ntyping, chewing, moving around" },
+  { e:"😣", w:"Absorbing Their Stress", s:"picking up on their tension", t:"😣 Absorbing Their Stress\npicking up on their tension" },
+  // TEMP HIDDEN - { e:"🔒", w:"Need a Closed Door", s:"can't filter the shared space", t:"🔒 Need a Closed Door\ncan't filter the shared space" },
+  { e:"📺", w:"Competing Sounds",   s:"TV, music, calls all at once", t:"📺 Competing Sounds\nTV, music, calls all at once" },
+  { e:"🔇", w:"Too Quiet",          s:"silence feels loud too",     t:"🔇 Too Quiet\nsilence feels loud too" },
+  { e:"🏢", w:"Open-Plan Overwhelm", s:"no privacy, constant noise", t:"🏢 Open-Plan Overwhelm\nno privacy, constant noise" },
+  { e:"🚶", w:"Unannounced Desk Visits", s:"people stopping by",    t:"🚶 Unannounced Desk Visits\npeople stopping by" },
+];
+
+const GENERAL = [
+  { e:"🤷", w:"Not Sure Why",       s:"can't identify the cause",   t:"🤷 Not Sure Why\ncan't identify the cause" },
+  { e:"🔄", w:"Routine Disrupted",  s:"plans changed",              t:"🔄 Routine Disrupted\nplans changed" },
+  { e:"📅", w:"Schedule Overload",  s:"too much happening",         t:"📅 Schedule Overload\ntoo much happening" },
+  { e:"🧠", w:"Overthinking",       s:"stuck in my head",           t:"🧠 Overthinking\nstuck in my head" },
+  { e:"💬", w:"Miscommunication",   s:"words came out wrong",       t:"💬 Miscommunication\nwords came out wrong" },
+  { e:"🕰️", w:"Time Blindness",     s:"lost track of time",         t:"🕰️ Time Blindness\nlost track of time" },
+  { e:"🎉", w:"Too Much Excitement", s:"good stress is still stress", t:"🎉 Too Much Excitement\ngood stress is still stress" },
+  { e:"😐", w:"Numb / Flat",        s:"no strong feelings either way", t:"😐 Numb / Flat\nno strong feelings either way" },
+  { e:"🧩", w:"Something's Off",    s:"can't place what",           t:"🧩 Something's Off\ncan't place what" },
+  { e:"🌗", w:"In Between",         s:"not quite okay, not quite not", t:"🌗 In Between\nnot quite okay, not quite not" },
+  { e:"🎯", w:"Can't Focus",        s:"attention keeps drifting",   t:"🎯 Can't Focus\nattention keeps drifting" },
+  { e:"🖥️", w:"Too Many Tabs",      s:"browser & brain both cluttered", t:"🖥️ Too Many Tabs\nbrowser & brain both cluttered" },
+  { e:"🧵", w:"Lost My Train of Thought", s:"forgot what I was doing", t:"🧵 Lost My Train of Thought\nforgot what I was doing" },
+  { e:"📴", w:"Notification Overload", s:"pings breaking concentration", t:"📴 Notification Overload\npings breaking concentration" },
+  { e:"💭", w:"Thought Overload",   s:"too many thoughts at once",  t:"💭 Thought Overload\ntoo many thoughts at once" },
+  { e:"🎨", w:"Enjoying This",      s:"in a good flow",             t:"🎨 Enjoying This\nin a good flow" },
+  { e:"🏆", w:"Feeling Accomplished", s:"proud of what I did",      t:"🏆 Feeling Accomplished\nproud of what I did" },
+  { e:"🔥", w:"Energized",          s:"ready to go",                t:"🔥 Energized\nready to go" },
+  { e:"🙂", w:"Content",            s:"comfortable right now",      t:"🙂 Content\ncomfortable right now" },
+  { e:"🎈", w:"Looking Forward",    s:"excited for this",           t:"🎈 Looking Forward\nexcited for this" },
+  { e:"🌟", w:"Having Fun",         s:"genuinely enjoying myself",  t:"🌟 Having Fun\ngenuinely enjoying myself" },
+  { e:"😴", w:"Bored",              s:"nothing feels engaging",     t:"😴 Bored\nnothing feels engaging" },
+  { e:"😬", w:"Dreading It",        s:"don't want to start",        t:"😬 Dreading It\ndon't want to start" },
+  { e:"🧊", w:"Reluctant to Join",  s:"would rather not",           t:"🧊 Reluctant to Join\nwould rather not" },
+  { e:"😩", w:"Overstimulated by Fun", s:"too much, even though it's good", t:"😩 Overstimulated by Fun\ntoo much, even though it's good" },
+];
+
+const CATEGORIES = [
+  { key:'state',      label:'My State',      data: STATE },
+  { key:'masking',    label:'Masking',       data: MASKING },
+  { key:'travel',     label:'Travel',        data: TRAVEL },
+  { key:'beach',      label:'Beach',         data: BEACH },
+  { key:'restaurant', label:'Restaurant',    data: RESTAURANT },
+  { key:'pool',       label:'Pool',          data: POOL },
+  { key:'wifi',       label:'WiFi & Signal', data: WIFI },
+  { key:'illness',    label:'Illness',       data: ILLNESS },
+  { key:'work',       label:'Work & Chores', data: WORK },
+  { key:'general',    label:'General',       data: GENERAL },
+];
+
+let levelValues = {};
+
+function buildLevels() {
+  const container = document.getElementById('levels-container');
+  container.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'category-block';
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.textContent = cat.label;
+    block.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'category-grid';
+
+    cat.data.forEach((card, i) => {
+      const id = `${cat.key}-${i}`;
+      levelValues[id] = 0;
+      const row = document.createElement('div');
+      row.className = card.w.length > 20 ? 'slider-row wide' : 'slider-row';
+      row.innerHTML = `
+        <div class="slider-icon">${card.e}</div>
+        <div class="slider-word">${card.w}</div>
+        <input type="range" min="0" max="10" value="0" id="slider-${id}"
+          oninput="updateLevel('${id}', this.value)">
+        <div class="slider-value" id="val-${id}">0</div>
+      `;
+      grid.appendChild(row);
+    });
+
+    block.appendChild(grid);
+    container.appendChild(block);
+  });
+}
+
+function updateLevel(id, value) {
+  levelValues[id] = parseInt(value, 10);
+  document.getElementById(`val-${id}`).textContent = value;
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  }
+  return fallbackCopy(text);
+}
+
+function fallbackCopy(text) {
+  return new Promise((resolve, reject) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('execCommand copy failed'));
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+function copyLevels() {
+  const lines = [];
+  CATEGORIES.forEach(cat => {
+    cat.data.forEach((card, i) => {
+      const id = `${cat.key}-${i}`;
+      const v = levelValues[id] || 0;
+      if (v > 0) lines.push(`${card.e} ${card.w}: ${v}/10`);
+    });
+  });
+  const toast = document.getElementById('toast');
+  if (lines.length === 0) {
+    toast.textContent = 'Set at least one slider first';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.textContent = 'Copied ✓ — paste into WhatsApp';
+    }, 1400);
+    return;
+  }
+  copyToClipboard(lines.join('\n')).then(() => {
+    toast.textContent = 'Copied ✓ — paste into WhatsApp';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1400);
+  }).catch(() => {
+    toast.textContent = 'Copy failed — try again';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.textContent = 'Copied ✓ — paste into WhatsApp';
+    }, 1800);
+  });
+}
+
+function resetLevels() {
+  Object.keys(levelValues).forEach(id => {
+    levelValues[id] = 0;
+    const slider = document.getElementById(`slider-${id}`);
+    const val = document.getElementById(`val-${id}`);
+    if (slider) slider.value = 0;
+    if (val) val.textContent = '0';
+  });
+}
+
 let buffer = [];
 
 function addToBuffer(card) {
@@ -300,7 +591,7 @@ function clearBuffer() {
 
 function syncBuffer() {
   const text = buffer.map(c => c.t).join('\n\n');
-  navigator.clipboard.writeText(text).catch(() => {});
+  copyToClipboard(text).catch(() => {});
   renderBufferUI();
 }
 
@@ -355,6 +646,11 @@ buildGrid(BEACH, 'grid-beach');
 buildGrid(RESTAURANT, 'grid-restaurant');
 buildGrid(POOL, 'grid-pool');
 buildGrid(WIFI, 'grid-wifi');
+buildGrid(ILLNESS, 'grid-illness');
+buildGrid(MASKING, 'grid-masking');
+buildGrid(WORK, 'grid-work');
+buildGrid(GENERAL, 'grid-general');
+buildLevels();
 renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
