@@ -195,6 +195,7 @@
   <button class="tab" onclick="switchTab('general',this)">General</button>
   <button class="tab" onclick="switchTab('griefcarer',this)">Carer Grief</button>
   <button class="tab" onclick="switchTab('hospital',this)">Hospital</button>
+  <button class="tab" onclick="switchTab('uktrip',this)">UK Trip</button>
 </div>
 
 <div class="scroll">
@@ -242,6 +243,9 @@
   </div>
   <div class="pane" id="pane-hospital">
     <div class="grid" id="grid-hospital"></div>
+  </div>
+  <div class="pane" id="pane-uktrip">
+    <div class="grid" id="grid-uktrip"></div>
   </div>
   <div class="pane" id="pane-general">
     <div class="grid" id="grid-general"></div>
@@ -303,14 +307,11 @@ const TRAVEL = [
   { e:"🛏️", w:"Strange Bed",        s:"sleep thrown off",        t:"🛏️ Strange Bed\nsleep thrown off" },
   { e:"📋", w:"Itinerary Anxiety",  s:"too much planned",        t:"📋 Itinerary Anxiety\ntoo much planned" },
   { e:"🛃", w:"Security Scan",      s:"pat-downs & scanners",    t:"🛃 Security Scan\npat-downs & scanners" },
-  // TEMP HIDDEN - { e:"👟", w:"Shoes & Belt Off",   s:"exposed in public",       t:"👟 Shoes & Belt Off\nexposed in public" },
   { e:"🎒", w:"Bag Search",         s:"strangers touching my things", t:"🎒 Bag Search\nstrangers touching my things" },
   { e:"📢", w:"Tannoy Overload",    s:"constant announcements",  t:"📢 Tannoy Overload\nconstant announcements" },
   { e:"🚪", w:"Gate Change",        s:"sudden change of plan",   t:"🚪 Gate Change\nsudden change of plan" },
   { e:"💡", w:"Harsh Lighting",     s:"fluorescent overload",    t:"💡 Harsh Lighting\nfluorescent overload" },
-  // TEMP HIDDEN - { e:"⏱️", w:"Queue Uncertainty",  s:"don't know how long",     t:"⏱️ Queue Uncertainty\ndon't know how long" },
   { e:"🏃", w:"Being Rushed",       s:"staff hurrying me",       t:"🏃 Being Rushed\nstaff hurrying me" },
-  // TEMP HIDDEN - { e:"🪪", w:"Explaining Myself",  s:"justifying invisible needs", t:"🪪 Explaining Myself\njustifying invisible needs" },
   { e:"👁️", w:"Eye Contact Pressure", s:"expected to look at people", t:"👁️ Eye Contact Pressure\nexpected to look at people" },
 ];
 
@@ -362,8 +363,7 @@ const WIFI = [
   { e:"🌍", w:"Wrong Country Band", s:"network not compatible",     t:"🌍 Wrong Country Band\nnetwork not compatible" },
   { e:"🏨", w:"Hotel WiFi",         s:"unreliable & slow",          t:"🏨 Hotel WiFi\nunreliable & slow" },
   { e:"😤", w:"Buffering Again",    s:"video keeps stopping",       t:"😤 Buffering Again\nvideo keeps stopping" },
-  { e:"📞", w:"Texts Cutting Out",  s:"can't hold a conversation",  t:"📞 Texts Cutting Out\ncan't hold a conversation" },
-  { e:"📷", w:"Photos Cutting Out", s:"won't send or load",         t:"📷 Photos Cutting Out\nwon't send or load" },
+  { e:"📞", w:"Calls Cutting Out",  s:"can't hold a conversation",  t:"📞 Calls Cutting Out\ncan't hold a conversation" },
   { e:"🔋", w:"Draining Battery",   s:"signal search using power",  t:"🔋 Draining Battery\nsignal search using power" },
 ];
 
@@ -678,6 +678,20 @@ const HOSPITAL = [
   { e:"🛏️", w:"Overnight Stay Fear", s:"unfamiliar surroundings",   t:"🛏️ Overnight Stay Fear\nunfamiliar surroundings" },
 ];
 
+const UK_TRIP = [
+  { e:"🚗", w:"Long Drive Fatigue",       s:"hours cooped up in the car",       t:"🚗 Long Drive Fatigue\nhours cooped up in the car" },
+  { e:"🗣️", w:"Unfamiliar Accents",       s:"harder to follow speech",          t:"🗣️ Unfamiliar Accents\nharder to follow speech" },
+  { e:"🏘️", w:"New Area Nerves",          s:"still home country, still strange", t:"🏘️ New Area Nerves\nstill home country, still strange" },
+  { e:"🧳", w:"Packing Stress",           s:"even a short trip feels big",      t:"🧳 Packing Stress\neven a short trip feels big" },
+  { e:"🛏️", w:"Different Bed",            s:"sleep thrown off",                 t:"🛏️ Different Bed\nsleep thrown off" },
+  { e:"🏡", w:"Missing Home Comforts",    s:"routine broken",                   t:"🏡 Missing Home Comforts\nroutine broken" },
+  { e:"🚂", w:"Train / Coach Stress",     s:"platforms & timetables",           t:"🚂 Train / Coach Stress\nplatforms & timetables" },
+  { e:"🗺️", w:"Getting Lost",             s:"new streets, no bearings",         t:"🗺️ Getting Lost\nnew streets, no bearings" },
+  { e:"🌊", w:"Dorset & Lyme Regis",      s:"cliffs, fossils, crowds",          t:"🌊 Dorset & Lyme Regis\ncliffs, fossils, crowds" },
+  { e:"🏖️", w:"Bournemouth & Poole",      s:"seaside towns, holiday crowds",    t:"🏖️ Bournemouth & Poole\nseaside towns, holiday crowds" },
+  { e:"🏨", w:"Unfamiliar Accommodation", s:"someone else's space",             t:"🏨 Unfamiliar Accommodation\nsomeone else's space" },
+];
+
 buildGrid(STATE, 'grid-state');
 // TEMP HIDDEN - buildGrid(SUPPORT, 'grid-support');
 buildGrid(TRAVEL, 'grid-travel');
@@ -691,6 +705,7 @@ buildGrid(WORK, 'grid-work');
 buildGrid(GENERAL, 'grid-general');
 buildGrid(GRIEF_CARER, 'grid-griefcarer');
 buildGrid(HOSPITAL, 'grid-hospital');
+buildGrid(UK_TRIP, 'grid-uktrip');
 buildLevels();
 renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
