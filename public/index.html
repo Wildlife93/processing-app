@@ -196,6 +196,7 @@
   <button class="tab" onclick="switchTab('griefcarer',this)">Carer Grief</button>
   <button class="tab" onclick="switchTab('hospital',this)">Hospital</button>
   <button class="tab" onclick="switchTab('uktrip',this)">UK Trip</button>
+  <button class="tab" onclick="switchTab('stickers',this)">Stickers</button>
 </div>
 
 <div class="scroll">
@@ -246,6 +247,9 @@
   </div>
   <div class="pane" id="pane-uktrip">
     <div class="grid" id="grid-uktrip"></div>
+  </div>
+  <div class="pane" id="pane-stickers">
+    <div class="grid" id="grid-stickers"></div>
   </div>
   <div class="pane" id="pane-general">
     <div class="grid" id="grid-general"></div>
@@ -688,12 +692,22 @@ const UK_TRIP = [
   { e:"🚂", w:"Train / Coach Stress",     s:"platforms & timetables",           t:"🚂 Train / Coach Stress\nplatforms & timetables" },
   { e:"🗺️", w:"Getting Lost",             s:"new streets, no bearings",         t:"🗺️ Getting Lost\nnew streets, no bearings" },
   { e:"🏠", w:"Lyme Regis Family Home",   s:"unfamiliar layout, different smells", t:"🏠 Lyme Regis Family Home\nunfamiliar layout, different smells" },
+  { e:"👥", w:"Lyme Regis Full House",    s:"too many relatives, constant noise", t:"👥 Lyme Regis Full House\ntoo many relatives, constant noise" },
+  { e:"🏖️", w:"Lyme Regis Beach",         s:"crowds, pebbles, family in tow",     t:"🏖️ Lyme Regis Beach\ncrowds, pebbles, family in tow" },
   { e:"👪", w:"Bournemouth Family Visit", s:"old roles & dynamics resurface",   t:"👪 Bournemouth Family Visit\nold roles & dynamics resurface" },
   { e:"🗣️", w:"Poole Family Gathering",   s:"too many relatives, too much noise", t:"🗣️ Poole Family Gathering\ntoo many relatives, too much noise" },
   { e:"🍽️", w:"Family Mealtime Pressure", s:"expectations around the table",    t:"🍽️ Family Mealtime Pressure\nexpectations around the table" },
   { e:"🛏️", w:"Sleeping at Relatives'",   s:"unfamiliar bed, thin walls",       t:"🛏️ Sleeping at Relatives'\nunfamiliar bed, thin walls" },
   { e:"👋", w:"Goodbye Overwhelm",        s:"leaving family behind again",      t:"👋 Goodbye Overwhelm\nleaving family behind again" },
   { e:"🏨", w:"Unfamiliar Accommodation", s:"someone else's space",             t:"🏨 Unfamiliar Accommodation\nsomeone else's space" },
+];
+
+const STICKERS = [
+  { e:"🔊", w:"Too Loud",        s:"Lyme Regis noise",         t:"🔊 Too Loud" },
+  { e:"👥", w:"Crowd Overload",  s:"Lyme Regis crowds",        t:"👥 Crowd Overload" },
+  { e:"☀️", w:"Sun Mode",        s:"soaking it up",            t:"☀️ Sun Mode" },
+  { e:"👧", w:"Niece Duty",      s:"looking after her",        t:"👧 Niece Duty" },
+  { e:"🐕", w:"Dog Duty",        s:"looking after the dog",    t:"🐕 Dog Duty" },
 ];
 
 buildGrid(STATE, 'grid-state');
@@ -710,6 +724,7 @@ buildGrid(GENERAL, 'grid-general');
 buildGrid(GRIEF_CARER, 'grid-griefcarer');
 buildGrid(HOSPITAL, 'grid-hospital');
 buildGrid(UK_TRIP, 'grid-uktrip');
+buildGrid(STICKERS, 'grid-stickers');
 buildLevels();
 renderBufferUI();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
